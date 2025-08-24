@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Distance to Kasem Bundit University - Romklao Campus</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="geolocation.css" />
+</head>
+<body>
+  <main class="container">
+    <h1 class="title">Find Your Distance to Kasem Bundit University (Romklao Campus)</h1>
+
+    <button id="locBtn" class="btn">Where am I?</button>
+
+    <p id="result" class="result"></p>
+  </main>
+
+  <script>
+    // Kasem Bundit University (Romklao campus) coordinates
+    const uniLat = 13.797322;
+    const uniLon = 100.752786;
+
+    const btn = document.getElementById('locBtn');
+    const out = document.getElementById('result');
+
+    btn.addEventListener('click', getLocation);
+
+    function getLocation() {
+      out.textContent = 'Requesting location…';
+      if (!navigator.geolocation) {
+        out.textContent = 'Geolocation is not supported by your browser.';
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(showDistance, showError, { enableHighAccuracy: true, timeout: 10000 });
+    }
+
+    function showDistance(position) {
+      const userLat = position.coords.latitude;
+      const userLon = position.coords.longitude;
+      const distance = haversineDistance(userLat, userLon, uniLat, uniLon);
+      out.textContent = `You're ${distance.toFixed(2)} km away from the Kasem Bundit University (Romklao Campus)`;
+    }
+
+    
+    function haversineDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371; // Earth radius in km
+      const dLat = deg2rad(lat2 - lat1);
+      const dLon = deg2rad(lon2 - lon1);
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c;
+    }
+
+    function deg2rad(deg) {
+      return deg * (Math.PI / 180);
+    }
+
+    function showError(error) {
+      switch (error.code) {
+        case error.PERMISSION_DENIED:
+          out.textContent = 'User denied the request for Geolocation.';
+          break;
+        case error.POSITION_UNAVAILABLE:
+          out.textContent = 'Location information is unavailable.';
+          break;
+        case error.TIMEOUT:
+          out.textContent = 'The request to get user location timed out.';
+          break;
+        default:
+          out.textContent = 'An unknown error occurred.';
+      }
+    }
+  </script>
+</body>
+</html>

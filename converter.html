@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Unit Converter</title>
+  <link rel="stylesheet" href="converter.css">
+</head>
+<body>
+
+<div class="converter">
+  <h2>Unit Converter</h2>
+
+  <label>Enter Value:</label>
+  <input type="number" class="value" id="inputValue" placeholder="Enter value">
+
+  <label>Convert:</label>
+  <select id="conversionType">
+    <option value="length">Meters to Feet</option>
+    <option value="height">Centimeters to Inches</option>
+    <option value="temperature">Celsius to Fahrenheit</option>
+    <option value="area">Square Meters to Square Feet</option>
+  </select>
+
+  <div style="margin-top:10px;">
+    <button onclick="convert()">Convert</button>
+    <button onclick="goBack()">Back</button>
+  </div>
+
+  <p id="result"></p>
+</div>
+
+<script>
+  function convert() {
+    let valueInput = document.getElementById("inputValue").value;
+    let value = parseFloat(valueInput);
+    let type = document.getElementById("conversionType").value;
+    let result = "";
+
+    // Empty check
+    if (valueInput.trim() === "") {
+      showMessage("⚠ Please enter a value.", true);
+      return;
+    }
+
+    // Not a number check
+    if (isNaN(value)) {
+      showMessage("⚠ Please enter a valid number.", true);
+      return;
+    }
+
+    // Negative check (allowed only for temperature)
+    if (value < 0 && type !== "temperature") {
+      showMessage("⚠ Value cannot be negative for this conversion.", true);
+      return;
+    }
+
+    // Conversion
+    switch (type) {
+      case "length":
+        result = `${value} meters = ${(value * 3.28084).toFixed(2)} feet`;
+        break;
+      case "height":
+        result = `${value} cm = ${(value / 2.54).toFixed(2)} inches`;
+        break;
+      case "temperature":
+        result = `${value} °C = ${((value * 9/5) + 32).toFixed(2)} °F`;
+        break;
+      case "area":
+        result = `${value} m² = ${(value * 10.7639).toFixed(2)} ft²`;
+        break;
+    }
+
+    showMessage(result, false);
+  }
+
+  function showMessage(msg, isError) {
+    let resultEl = document.getElementById("result");
+    resultEl.style.color = isError ? "red" : "black";
+    resultEl.innerHTML = msg;
+  }
+
+  function goBack() {
+    window.history.back();
+  }
+</script>
+
+</body>
+</html>
